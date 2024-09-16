@@ -117,3 +117,32 @@ print(df.loc[0:3])  # 0,1,2,3
 
 col_names = ["age", "embarked", "alive"]
 print(df.loc[0:3, col_names])  # 0,1,2,3 rows "age", "embarked", "alive" columns contain str+float**
+
+
+# Conditional Selection
+import pandas as pd
+import seaborn as sns
+
+pd.set_option('display.max_columns', None)  # Get rid of 3 dots(...). Generally not prefer in dataset has many columns.
+df = sns.load_dataset("titanic")
+print(df.head())
+
+print(df[df["age"] > 50].head())  # Age > 50 people from dataset
+print(df[df["age"] > 50]["age"].count())  # count Age > 50 people from dataset
+
+print(df.loc[df["age"] > 50, "class"].head())
+print(df.loc[df["age"] > 50, ["age", "class"]].head())
+
+# !!!! If there ara more than 1 condition, parenthesis all conditions statements***
+print(df.loc[(df["age"] > 50) & (df["sex"] == "male"), ["age", "class"]].head())
+
+print(df.loc[(df["age"] > 50)
+             & (df["sex"] == "male")
+             & (df["embark_town"] == "Cherbourg"), ["age", "class", "embark_town"]].head())  # 3 conditions
+
+print(df.loc[(df["age"] > 50)
+             & (df["sex"] == "male")
+             & ((df["embark_town"] == "Cherbourg") | (df["embark_town"] == "Southampton")),
+            ["age", "class", "embark_town"]].head())  # 3 conditions
+
+print(df["embark_town"].value_counts())
