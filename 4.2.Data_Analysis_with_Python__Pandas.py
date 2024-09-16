@@ -165,3 +165,25 @@ print(df.groupby(["sex", "embark_town", "class"]).agg({
     "age": ["mean"],
     "survived": "mean",
     "sex": "count"}))
+
+# Pivot Table
+import pandas as pd
+import seaborn as sns
+
+pd.set_option('display.max_columns', None)  # Get rid of 3 dots(...). Generally not prefer in dataset has many columns.
+pd.set_option('display.width', 500)                  # Table ***
+df = sns.load_dataset("titanic")
+
+print(df.pivot_table("survived", "sex", "embarked"))  # pivot_table(values, row-index, column)***default value ops: mean
+print(df.pivot_table("survived", "sex", "embarked", aggfunc="std"))  # Standard Deviation
+print(df.pivot_table("survived", "sex", ["embarked", "class"]))  # 2 level
+
+# !!! cut and qcut functions are commonly used for converting numerical variables to categorical***
+# If you know(age: 0-3 baby, 3-4 toddler, 18 adult) which categories you want to divide numeric values into,
+# use the cut function. Don't kow use qcut function.***
+df["new_age"] = pd.cut(df["age"], [0, 10, 18, 25, 40, 90])
+print(df.head())
+
+print(df.pivot_table("survived", "sex", "new_age"))
+print(df.pivot_table("survived", "sex", ["new_age", "class"]))
+
