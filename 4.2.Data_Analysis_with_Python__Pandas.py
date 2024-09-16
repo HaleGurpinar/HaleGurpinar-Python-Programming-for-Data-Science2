@@ -146,3 +146,22 @@ print(df.loc[(df["age"] > 50)
             ["age", "class", "embark_town"]].head())  # 3 conditions
 
 print(df["embark_town"].value_counts())
+
+
+# Aggregation & Grouping
+import pandas as pd
+import seaborn as sns
+
+pd.set_option('display.max_columns', None)  # Get rid of 3 dots(...). Generally not prefer in dataset has many columns.
+df = sns.load_dataset("titanic")
+
+print(df.groupby("sex")["age"].mean())  # Mean age by sex
+print(df.groupby("sex").agg({"age": "mean"}))
+print(df.groupby("sex").agg({"age": ["mean", "sum", "max"]}))
+print(df.groupby("sex").agg({"age": ["mean", "sum"], "survived": "mean"}))
+print(df.groupby(["sex", "embark_town"]).agg({"age": ["mean"], "survived": "mean"}))  # 2 level grouping
+print(df.groupby(["sex", "embark_town", "class"]).agg({"age": ["mean"], "survived": "mean"}))
+print(df.groupby(["sex", "embark_town", "class"]).agg({
+    "age": ["mean"],
+    "survived": "mean",
+    "sex": "count"}))
