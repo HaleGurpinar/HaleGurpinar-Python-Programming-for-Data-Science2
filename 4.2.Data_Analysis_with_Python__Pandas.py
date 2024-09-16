@@ -26,7 +26,6 @@ print(df.head())
 # Pandas CheatSheet ***
 
 # Quick Look at Data
-import pandas as pd
 import seaborn as sns
 
 df = sns.load_dataset("titanic")
@@ -46,7 +45,6 @@ print(df["sex"].value_counts())
 print(df["alive"].value_counts())
 
 # Selection in Pandas****
-import pandas as pd
 import seaborn as sns
 
 df = sns.load_dataset("titanic")
@@ -110,14 +108,12 @@ print(df.drop(col_names, axis=1).head())  # Delete col_names values variables
 print(df.loc[:, df.columns.str.contains("age")].head())  # Columns names have "age" str, loc used selection from df
 print(df.loc[:, ~df.columns.str.contains("age")].head())  # # Columns names have not "age" str
 
-
 # iloc(integer based selection) & loc(label based selection)***
 print(df.iloc[0:3])  # 0,1,2
 print(df.loc[0:3])  # 0,1,2,3
 
 col_names = ["age", "embarked", "alive"]
 print(df.loc[0:3, col_names])  # 0,1,2,3 rows "age", "embarked", "alive" columns contain str+float**
-
 
 # Conditional Selection
 import pandas as pd
@@ -143,10 +139,9 @@ print(df.loc[(df["age"] > 50)
 print(df.loc[(df["age"] > 50)
              & (df["sex"] == "male")
              & ((df["embark_town"] == "Cherbourg") | (df["embark_town"] == "Southampton")),
-            ["age", "class", "embark_town"]].head())  # 3 conditions
+["age", "class", "embark_town"]].head())  # 3 conditions
 
 print(df["embark_town"].value_counts())
-
 
 # Aggregation & Grouping
 import pandas as pd
@@ -171,7 +166,7 @@ import pandas as pd
 import seaborn as sns
 
 pd.set_option('display.max_columns', None)  # Get rid of 3 dots(...). Generally not prefer in dataset has many columns.
-pd.set_option('display.width', 500)                  # Table ***
+pd.set_option('display.width', 500)  # Table ***
 df = sns.load_dataset("titanic")
 
 print(df.pivot_table("survived", "sex", "embarked"))  # pivot_table(values, row-index, column)***default value ops: mean
@@ -187,3 +182,74 @@ print(df.head())
 print(df.pivot_table("survived", "sex", "new_age"))
 print(df.pivot_table("survived", "sex", ["new_age", "class"]))
 
+# Apply(Apply a particular function to rows and columns) & Lambda(Small Anonym Functions)
+# A lambda function can take any number of arguments, but can only have one expression. lambda arguments : expression
+import pandas as pd
+import seaborn as sns
+
+pd.set_option('display.max_columns', None)  # Get rid of 3 dots(...). Generally not prefer in dataset has many columns.
+pd.set_option('display.width', 500)  # Table ***
+df = sns.load_dataset("titanic")
+
+df["age2"] = df["age"] * 2
+df["age3"] = df["age"] * 5
+
+# ### EX.:  Divide by 10 all values that contain "age" str
+# 1.) Normal
+print((df["age"] / 10).head())
+print((df["age2"] / 10).head())
+print((df["age3"] / 10).head())
+# 2.) Loop             --> Permanent
+for col in df.columns:
+    if "age" in col:
+        df[col] = df[col] / 10
+print(df.head())
+# 3.)Apply & Lambda    ---> Use lambda functions when an anonymous function is required for a short period of time.
+print(df[["age", "age2", "age3"]].apply(lambda x: x / 10).head())
+print(df.loc[:, df.columns.str.contains("age")].apply(lambda x: x / 10).head())  # Programmatic Way
+
+# Ex: Subtract mean from all values then  divide by std all values that contain "age" str
+print(df.loc[:, df.columns.str.contains("age")].apply(lambda x: (x - x.mean()) / x.std()).head())  # 1.
+
+
+def standard_scaler(col_name):
+    return (col_name - col_name.mean()) / col_name.std()
+
+
+print(df.loc[:, df.columns.str.contains("age")].apply(standard_scaler).head())  # 2. We can use functions with apply()
+
+# permanent ways
+df.loc[:, ["age", "age2", "age3"]] = df.loc[:, df.columns.str.contains("age")].apply(standard_scaler)
+df.loc[:, df.columns.str.contains("age")] = df.loc[:, df.columns.str.contains("age")].apply(standard_scaler)
+
+
+# Join Operations
+import pandas as pd
+import numpy as np
+
+pd.set_option('display.max_columns', None)  # Get rid of 3 dots(...). Generally not prefer in dataset has many columns.
+pd.set_option('display.width', 500)  # Table ***
+df = sns.load_dataset("titanic")
+
+m = np.random.randint(1, 30, size=(5, 3))
+df1 = pd.DataFrame(m, columns=["var1", "var2", "var3"])  # Create DataFrame from 0. m:enter data struct., columns:names
+df2 = df1 + 99
+# print(df1, "\n", df2)
+print(pd.concat([df1, df2]))
+print(pd.concat([df1, df2], ignore_index=True))  # Join dataframes
+
+df1 = pd.DataFrame({'employees': ['john', 'dennis', 'mark', 'maria'],
+                    'group': ['accounting', 'engineering', 'engineering', 'hr']})
+
+df2 = pd.DataFrame({'employees': ['mark', 'john', 'dennis', 'maria'],
+                    'start_date': [2010, 2009, 2014, 2019]})
+
+print(pd.merge(df1, df2))
+print(pd.merge(df1, df2, on="employees"))
+
+# ÊX: Access every employees' manager
+
+df3 = pd.merge(df1, df2)
+df4 = pd.DataFrame({'group': ['accounting', 'engineering', 'hr'],
+                    'manager': ['Tom', 'Rick', 'William']})
+print(pd.merge(df3, df4))
