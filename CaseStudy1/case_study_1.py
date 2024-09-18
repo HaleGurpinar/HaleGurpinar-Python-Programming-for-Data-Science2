@@ -159,7 +159,8 @@ def func(list):
 
 # ##############################################
 # 6: Aşağıda verilen listede mühendislik ve tıp fakülterinde dereceye giren öğrencilerin isimleri bulunmaktadır.
-# Sırasıyla ilk üç öğrenci mühendislik fakültesinin başarı sırasını temsil ederken son üç öğrenci de tıp fakültesi öğrenci sırasına aittir.
+# Sırasıyla ilk üç öğrenci mühendislik fakültesinin başarı sırasını temsil ederken
+# son üç öğrenci de tıp fakültesi öğrenci sırasına aittir.
 # Enumarate kullanarak öğrenci derecelerini fakülte özelinde yazdırınız.
 # ##############################################
 
@@ -173,7 +174,9 @@ for i, x in enumerate(ogrenciler):
         print("Tıp Fakültesi", i, ". öğrenci: ", x)
 
 # ##############################################
-# 7: Aşağıda 3 adet liste verilmiştir. Listelerde sırası ile bir dersin kodu, kredisi ve kontenjan bilgileri yer almaktadır. Zip kullanarak ders bilgilerini bastırınız.
+# 7: Aşağıda 3 adet liste verilmiştir.
+# Listelerde sırası ile bir dersin kodu, kredisi ve kontenjan bilgileri yer almaktadır.
+# Zip kullanarak ders bilgilerini bastırınız.
 # ##############################################
 
 ders_kodu = ["CMP1005", "PSY1001", "HUK1005", "SEN2204"]
