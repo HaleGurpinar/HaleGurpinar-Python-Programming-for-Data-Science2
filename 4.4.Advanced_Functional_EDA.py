@@ -2,6 +2,7 @@ import seaborn as sns
 import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
+from pandas.core.interchange import dataframe
 
 pd.set_option('display.max_columns', None)  # Get rid of 3 dots(...). Generally not prefer in dataset has many columns.
 pd.set_option('display.width', 500)  # Table ***
@@ -155,3 +156,87 @@ num_summary(df, "age", plot=True)  # age histogram graph
 for col in num_cols:
     num_summary(df, col, plot=True)   # all numerical variables histogram graphics
 
+
+# Grabbing Variables and Generalizing Ops
+import seaborn as sns
+import pandas as pd
+import numpy as np
+from matplotlib import pyplot as plt
+
+pd.set_option('display.max_columns', None)  # Get rid of 3 dots(...). Generally not prefer in dataset has many columns.
+pd.set_option('display.width', 500)  # Table ***
+df = sns.load_dataset("titanic")
+
+
+def grab_col_names(dataframe, cat_th=10, car_th=20):  # Unique variable num <10 categorical, >20 cardinal variable
+    # docstring: Settings-> Docstring-> Change numPy-> 3 " + enter
+    """
+
+    Parameters
+    ----------
+    dataframe: dataframe
+        dataframe that could be take variables from
+    cat_th: int, float
+        class threshold for numerical but categorical variables
+    car_th: int, float
+        class threshold for categorical but numerical variables
+
+    Returns
+    -------
+    cat_cols: list
+        Categorical variable list
+    num_cols: list
+        Numerical variable list
+    cat_but_car: list
+        Cardinal variables list looks like categorical
+
+    Notes
+    ------
+    cat_cols + num_cols + cat_but_car = total variable number
+    num_but_cat in cat_cols
+
+    """
+
+    cat_cols = [col for col in df.columns if str(df[col].dtypes) in ["category", "bool", "object"]]
+    num_but_cat = [col for col in df.columns if df[col].nunique() < 10 and df[col].dtypes in ["int64", "float64"]]
+    cat_but_car = [col for col in df.columns if df[col].nunique() > 20 and str(df[col].dtypes) in ["category", "object"]]
+
+    cat_cols = cat_cols + num_but_cat
+    cat_cols = [col for col in cat_cols if col not in cat_but_car]
+
+    num_cols = [col for col in df.columns if df[col].dtypes in ["int64", "float64"]]
+    num_cols = [col for col in df.columns if col not in cat_cols]
+
+    print(f"Observations: {dataframe.shape[0]}")
+    print(f"Variables: {dataframe.shape[1]}")
+    print(f'cat_cols: {len(cat_cols)}')
+    print(f'num_cols: {len(num_cols)}')
+    print(f'cat_but_car: {len(cat_but_car)}')
+    print(f'num_but_cat: {len(num_but_cat)}')
+
+    return cat_cols, num_cols, cat_but_car
+
+
+cat_cols, num_cols, cat_but_car = grab_col_names(df)
+
+cat_summary(df, "sex")
+for col in cat_cols:
+    cat_summary(df, col)
+
+for col in num_cols:
+    num_summary(df, col, plot=True)
+
+# bonus: convert Bool type variables to Integer with astype function and use cat_summary func.(visual) effectively
+df = sns.load_dataset("titanic")
+df.info()
+for col in df.columns:
+    if df[col].dtypes == "bool":
+        df[col] = df[col].astype(int)
+
+cat_cols, num_cols, cat_but_car = grab_col_names(df)
+
+for col in cat_cols:
+    cat_summary(df, col, plot=True)
+
+for col in num_cols:
+    num_summary(df, col, plot=True)
