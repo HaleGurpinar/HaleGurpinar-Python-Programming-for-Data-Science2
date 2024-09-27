@@ -240,3 +240,35 @@ for col in cat_cols:
 
 for col in num_cols:
     num_summary(df, col, plot=True)
+
+
+# Analysis of Target Variable
+
+# survived variable is target.
+
+# Analysis Target Variable with categorical variables
+print(df.groupby("sex")["survived"].mean())  # Being a female(%74) affect survived variable
+
+
+def target_summary_with_cat(dataframe, target, categorical_col):
+    print(pd.DataFrame({"TARGET_MEAN": dataframe.groupby(categorical_col)[target].mean()}), end="\n\n\n")
+
+
+target_summary_with_cat(df, "survived", "pclass")  # First class passengers(%62) survived more
+
+for col in cat_cols:
+    target_summary_with_cat(df, "survived", col)
+
+# Analysis Target Variable with numerical variables
+print(df.groupby("survived")["age"].mean())  # Change axis. Age Means of survived(1)= 28yo, death(0)= 30yo
+print(df.groupby("survived").agg({"age": "mean"}))  # Same output with above but more readable
+
+
+def target_summary_with_num(dataframe, target, numerical_col):
+    print(dataframe.groupby(target).agg({numerical_col: "mean"}), end="\n\n\n")
+
+
+target_summary_with_num(df, "survived", "age")
+
+for col in num_cols:
+    target_summary_with_num(df, "survived", col)
