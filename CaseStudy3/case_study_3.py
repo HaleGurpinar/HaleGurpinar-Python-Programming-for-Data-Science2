@@ -107,3 +107,34 @@ print(agg_df.head())
 # Yeni eklenecek değişkenin adı: sales_level_based
 # Önceki soruda elde edeceğiniz çıktıdaki gözlemleri bir araya getirerek sales_level_based değişkenini oluşturmanız gerekmektedir
 # ##############################################
+
+agg_df['sales_level_based'] = agg_df[["SaleCityName", "ConceptName", "Seasons"]].agg(lambda x: '_'.join(x).upper(), axis=1)
+print(agg_df.head())
+
+
+# ##############################################
+# 7:  Yeni müşterileri (personaları) segmentlere ayırınız
+# Yeni personaları PRICE’a göre 4 segmente ayırınız.
+# Segmentleri SEGMENT isimlendirmesi ile değişken olarak agg_df’e ekleyiniz.
+# Segmentleri betimleyiniz (Segmentlere göre group by yapıp price mean, max, sum’larını alınız).
+# ##############################################
+
+agg_df["SEGMENT"] = pd.qcut(agg_df["Price"], 4, labels=["D", "C", "B", "A"])
+print(agg_df.head())
+agg_df.groupby("SEGMENT").agg({"Price": ["mean", "max", "sum"]})
+print(agg_df.groupby("SEGMENT").agg({"Price": ["mean", "max", "sum"]}))
+
+
+# ##############################################
+# 8: Yeni gelen müşterileri sınıflandırıp, ne kadar gelir getirebileceklerini tahmin ediniz.
+# Oluşan son df'i price a göre sıralayınız.
+# Antalya’da herşey dahil ve yüksek sezonda tatil yapmak isteyen bir kişinin ortalama ne kadar gelir kazandırması beklenir?
+# Girne’de yarım pansiyon bir otele düşük sezonda giden bir tatilci hangi segmentte yer alacaktır?
+# ##############################################
+print(agg_df.sort_values("Price"))
+
+new_user = "ANTALYA_HERŞEY DAHIL_HIGH"
+print(agg_df[agg_df["sales_level_based"] == new_user])
+
+new_user2 = "GIRNE_YARIM PANSIYON_LOW"
+print(agg_df[agg_df["sales_level_based"] == new_user2])
