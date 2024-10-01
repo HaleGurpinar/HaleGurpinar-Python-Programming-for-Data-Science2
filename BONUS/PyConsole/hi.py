@@ -1,0 +1,1 @@
+print("Merhaba, ben her konuda şanslı, bilyoner,  mutlu, sağlıklı, huzurlu, başarılı, saygılı, sevgili Halenur!")
